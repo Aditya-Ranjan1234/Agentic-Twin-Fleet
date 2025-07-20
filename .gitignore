@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.env
+venv/
+ENV/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+coverage.xml
+
+# Logs
+*.log
+
+# IDE / editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# MacOS / Windows garbage
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+influxdb_data/
+grafana_data/
+
+# Node
+node_modules/
+
+# Misc
+*.bak

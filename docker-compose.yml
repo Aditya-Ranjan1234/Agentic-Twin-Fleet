@@ -97,6 +97,38 @@ services:
     depends_on:
       - mosquitto
 
+  utilization_agent:
+    build: .
+    command: python src/agents/utilization_agent.py
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    depends_on:
+      - mosquitto
+
+  energy_agent:
+    build: .
+    command: python src/agents/energy_agent.py
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    depends_on:
+      - mosquitto
+
+  reporting_agent:
+    build: .
+    command: python src/agents/reporting_agent.py
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN=
+      - INFLUX_ORG=my-org
+      - INFLUX_BUCKET=fleet_metrics
+    depends_on:
+      - mosquitto
+      - influxdb
+
 volumes:
   influxdb_data:
   grafana_data:
