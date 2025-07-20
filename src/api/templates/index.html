@@ -16,6 +16,9 @@
     <div id="vehicle-table" class="mb-5"></div>
     <h3>Vehicle Telemetry</h3>
     <div id="chart" style="height:400px;"></div>
+
+    <h3 class="mt-5">Recent Agent Actions</h3>
+    <div id="actions-table"></div>
   </div>
 
   <script>
@@ -62,9 +65,37 @@
       Plotly.newPlot('chart', traces, { title: `Telemetry for ${vehicleId}` });
     }
 
+    async function fetchActions() {
+      const res = await fetch('/api/actions');
+      return res.json();
+    }
+
+    function actionsHTML(list) {
+      if (list.length === 0) return '<p>No recent actions</p>';
+      const headerLabels = ['time','vehicle_id','agent','type','issue','value'];
+      const header = headerLabels.map(h => `<th>${h}</th>`).join('');
+      const rows = list.map(row => `
+        <tr>
+          <td>${row.time}</td>
+          <td>${row.vehicle_id}</td>
+          <td>${row.agent}</td>
+          <td>${row.type}</td>
+          <td>${row.issue}</td>
+          <td>${row.value}</td>
+        </tr>`).join('');
+      return `<table class="table table-sm"><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    async function refreshActions() {
+      const list = await fetchActions();
+      document.getElementById('actions-table').innerHTML = actionsHTML(list);
+    }
+
     // Initial load and periodic refresh
     refreshTable();
     setInterval(refreshTable, 5000);
+    refreshActions();
+    setInterval(refreshActions, 7000);
   </script>
 </body>
 </html>

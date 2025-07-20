@@ -66,5 +66,32 @@ def api_vehicle_timeseries(vehicle_id):
     return jsonify(df.to_dict(orient="records"))
 
 
+@app.route("/api/actions")
+def api_actions():
+    """Return recent agent actions (last 100) for dashboard."""
+    query_api = get_influx_client().query_api()
+    query = f"""
+    from(bucket: \"{INFLUX_BUCKET}\")
+      |> range(start: -24h)
+      |> filter(fn: (r) => r._measurement == \"agent_action\")
+      |> sort(columns: [\"_time\"], desc: true)
+      |> limit(n: 100)
+    """
+    tables = query_api.query(query)
+    actions = []
+    for table in tables:
+        for record in table.records:
+            actions.append({
+                "time": record.get_time().isoformat(),
+                "vehicle_id": record.values.get("vehicle_id"),
+                "agent": record.values.get("agent"),
+                "type": record.values.get("type"),
+                "issue": record.values.get("issue"),
+                "value": record.values.get("value"),
+            })
+    return jsonify(actions)
+
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

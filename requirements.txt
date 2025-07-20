@@ -4,3 +4,5 @@ influxdb-client==1.39.0
 pandas==2.2.2
 numpy==1.26.4
 plotly==5.22.0
+scikit-learn==1.5.0
+ortools==9.10.4067
